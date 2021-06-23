@@ -1,0 +1,74 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css" >
+{% endblock %}
+<!--Auto Code By 7be.cn-->
+<!--中间内容-->
+{% block content %}
+
+
+<section class="content">
+    <form class="form-horizontal" id="form">
+    <div class="card mh card-info">
+        <div class="card-header">
+            <h3 class="card-title">{{.mod.Name}}详情</h3>
+        </div>
+        <!-- /.card-header -->
+        
+            <div class="card-body table-responsive">
+                {% if item != nil %}
+                <input type="hidden" name="id" value="{{printf `{{item.Id}}`}}">
+                {% endif %}
+                {{range $index, $column := .cols}}
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">{{$column.Mark}}</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="{{$column.Mark}}" name="{{$column.Name}}"  value="{{printf `{{item.`}}{{$column.GoName}}{{printf `}}`}}">
+                    </div>
+                </div>
+                {{end}}
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">下拉示例</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" name="menus" data-placeholder="选择" id="{{.mod.Abbr}}">
+                            <option  value="1" >选项1</option>
+                            <option  value="2" >选项2</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <input type="button" onclick="clickSave()" class="btn btn-primary" value="{% if item == nil %}创建{% else %}保存{% endif %}"></input>
+            </div>
+            {% include "../../../layout/loading.html" %}
+        <!-- /.card-body -->
+    </div>
+    
+    </form>
+    
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript" src="/static/js/select2.full.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //Initialize Select2 Elements
+        $('#{{.mod.Abbr}}').select2()
+    });
+  function clickSave() {
+    var data = formJson("form");
+    requestAjax("/admin/module/{{.mod.Abbr}}/save",data,function(res) {
+        issubmit = false
+        if (res.code == 0) {
+            window.location.reload();
+        }
+    });
+  }
+
+</script>
+
+{% endblock %}

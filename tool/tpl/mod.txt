@@ -1,0 +1,17 @@
+package module
+
+import (
+	"festival/app/model"
+)
+
+// {{.mod.Name}}
+// power by 7be.cn
+type {{.mod.ModName}} struct {
+	model.BaseModel
+	{{range $index, $column := .cols}}{{$column.GoName}} {{$column.Type}} `form:"{{$column.Name}}" json:"{{$column.Name}}" gorm:"column:{{$column.Name}};type:{{$column.DbType}};comment:{{$column.Mark}};"`
+	{{end}}
+}
+
+func ({{.mod.ModName}}) TableName() string {
+	return "{{.mod.TableName}}"
+}

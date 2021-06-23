@@ -1,0 +1,114 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.page.css" >
+{% endblock %}
+
+<!--中间内容-->
+{% block content %}
+<section class="content">
+    <div class="card mh">
+        <div class="card-header">
+            <h3 class="card-title">菜单列表</h3>
+            <div class="card-tools">
+                <a href="/admin/system/menu/edit" class="btn btn-tool btn-sm">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-wrap table-bordered">
+                <thead>
+                <tr>
+                    <th style="width: 70px;">一级</th>
+                    <th style="width: 60px;">二级</th>
+                    <th style="width: 150px;">名称</th>
+                    <th style="width: 250px;">路由</th>
+                    <!-- <th style="width: 200px;">权限</th> -->
+                    <th style="width: 60px;">状态</th>
+                    <th style="width: 60px;">类型</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in Rows %}
+                <tr>
+                    <td>——</td>
+                    <td></td>
+                    <td>{{item.Name}}</td>
+                    <td>{{item.Router}}</td>
+                    <!-- <td>
+                        <span class="badge badge-danger">{{item.Permission}}</span>
+                    </td> -->
+                    <td>
+                        {% if item.Visible == 1 %}
+                        <span class="badge badge-primary">显示</span>
+                        {% else %}
+                        <span class="badge badge-dark">隐藏</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-danger">{{item.Method}}</span>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="/admin/system/menu/edit?Id={{item.Id}}" class="btn btn-outline-primary"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:void(0);" onclick="confirmShow({{item.Id}})" class="btn btn-outline-danger"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                    {% for it in item.Children %}
+                        <tr>
+                            <td></td>
+                            <td>——</td>
+                            <td>{{it.Name}}</td>
+                            <td>{{it.Router}}</td>
+                            <!-- <td>
+                                <span class="badge badge-danger">{{it.Permission}}</span>
+                            </td> -->
+                            <td>
+                                {% if it.Visible == 1 %}
+                                <span class="badge badge-primary">显示</span>
+                                {% else %}
+                                <span class="badge badge-dark">隐藏</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge badge-danger">{{it.Method}}</span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/admin/system/menu/edit?Id={{it.Id}}" class="btn btn-outline-primary"><i class="fas fa-edit"></i></a>
+                                    <a href="javascript:void(0);" onclick="confirmShow({{it.Id}})" class="btn btn-outline-danger"><i class="fas fa-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <div class="card-footer clearfix">
+        <!--分页-->
+        <div id="page" class="page"></div>
+    </div>
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript">
+    function deleteItem(id) {
+        var data = {id:id};
+        requestAjax("/admin/system/menu/del",data,function(res) {
+            if (res.code == 0) {
+                window.location.reload();
+            }
+        });
+    }
+</script>
+{% endblock %}

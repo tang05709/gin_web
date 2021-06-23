@@ -1,0 +1,56 @@
+# HTTP Server status
+status:
+    #后台管理服务开关
+    admin: true
+    #Api服务开关
+    api: true
+
+#后台管理服务配置
+admin:
+    #后台服务绑定地址和端口
+    address: ':8100'
+    #后台服务静态资源目录
+    serverRoot: 'resource/static'
+    swagger: 'http://localhost:8100/static/swagger/swagger.json'
+
+#API管理服务配置
+api:
+    address: ':8086'    #Api服务绑定地址和端口
+    serverRoot: 'public' #Api服务静态资源目录
+
+#jwt配置
+jwt:
+    timeout: 3600 #过期时间
+    refresh: 1800 #刷新时间
+    encryptKey: 'DwZmmcisjBwL7Kt4' #安全密钥
+
+
+# 日志配置
+logger:
+    path: './log/backend'   #日志保存路径
+    level: 'warn'    #日志级别
+
+# 定时任务
+task:
+    workPoolSize: 10    #并发任务数
+
+# 数据库配置
+database:
+    #主数据库
+    master: 'root:123456@tcp(127.0.0.1:3306)/festival?charset=utf8mb4&parseTime=True&loc=Local'
+    debug: true #sql调试开关
+    log: './log'   #sql日志目录
+    logMode: false
+
+# 代码生成配置
+gen:
+    #生成作者
+    author: '7be_cn'
+    #生成的模块名称
+    moduleName: 'module'
+    #生成的包名称
+    packageName: 'festival'
+    #是否去掉表前缀
+    autoRemovePre: true
+    #表前缀
+    tablePrefix: 't_,sys_'

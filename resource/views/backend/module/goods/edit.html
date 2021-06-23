@@ -1,0 +1,131 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css" >
+{% endblock %}
+<!--Auto Code By 7be.cn-->
+<!--中间内容-->
+{% block content %}
+
+
+<section class="content">
+    <form class="form-horizontal" id="form">
+    <div class="card mh card-info">
+        <div class="card-header">
+            <h3 class="card-title">礼品表详情</h3>
+        </div>
+        <!-- /.card-header -->
+        
+            <div class="card-body table-responsive">
+                {% if item != nil %}
+                <input type="hidden" name="id" value="{{item.Id}}">
+                {% endif %}
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">标题</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="标题" name="title"  value="{{item.Title}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">封面</label>
+                    <div class="col-sm-5">
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="validatedCustomFile" required>
+                            <label class="custom-file-label" for="validatedCustomFile">
+                                {% if item.Cover != nil %}
+                                {{item.Cover}}
+                                {% else %}
+                                选择文件
+                                {% endif %}
+                            </label>
+                            <input type="hidden" class="form-control" name="cover"  value="{{item.Cover}}">
+                        </div>
+                        <div class="res">
+                            {% if item.Cover != nil %}
+                            <img src="{{item.Cover}}" height="200" />
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">库存量</label>
+                    <div class="col-sm-5">
+                        <input type="number" class="form-control" placeholder="库存量" name="num"  value="{{item.Num}}">
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <input type="button" onclick="clickSave()" class="btn btn-primary" value="{% if item == nil %}创建{% else %}保存{% endif %}"></input>
+            </div>
+            {% include "../../../layout/loading.html" %}
+        <!-- /.card-body -->
+    </div>
+    
+    </form>
+    
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript" src="/static/js/select2.full.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //Initialize Select2 Elements
+        $('#goods').select2()
+        // 上传
+        $("#validatedCustomFile").change(function () {
+            var filedata = $("#validatedCustomFile").val();
+            if (filedata.length <= 0) {
+                alert("请选择文件!");
+                return
+            }
+            //文件上传通过Formdata去储存文件的数据
+            var data = new FormData();
+            data.append("upload", $("#validatedCustomFile")[0].files[0]);
+            var urlStr = "/admin/upload";
+            var domParent = $(this).parent();
+            $.ajax({
+                url: urlStr,
+                type: "post",
+                dataType: "json",
+                contentType: false,
+                data: data,
+                processData: false,
+                success: function (data) {
+                    console.log(data.code)
+                    if (data.code == 0) {
+                        domParent.find("input[type=hidden]").val(data.data.url);
+                        domParent.find('.custom-file-label').html(data.data.url);
+                        domParent.next('.res').html('<img src="' + data.data.url + '" height="200" />');
+                    } else {
+                        alert(data.msg);
+                        return
+                    }
+                },
+                error: function (data) {
+                    alert(data.msg);
+                    return
+                }
+            })
+        });
+    });
+  function clickSave() {
+      var data = formJson("form");
+      data.num = parseInt(data.num);
+    requestAjax("/admin/module/goods/save",data,function(res) {
+        issubmit = false
+        if (res.code == 0) {
+            window.location.reload();
+        }
+    });
+  }
+
+</script>
+
+{% endblock %}

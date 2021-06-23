@@ -1,0 +1,124 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css" >
+{% endblock %}
+
+<!--中间内容-->
+{% block content %}
+<section class="content">
+    <form class="form-horizontal" id="form">
+    <div class="card mh card-info">
+        <div class="card-header">
+            <h3 class="card-title">菜单详情</h3>
+        </div>
+        <!-- /.card-header -->
+        
+            <div class="card-body table-responsive">
+                {% if item != nil %}
+                <input type="hidden" name="id" value="{{item.Id}}">
+                {% endif %}
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">父级</label>
+                    <div class="col-sm-5">
+                        <select class="form-control select2" name="parentId" data-placeholder="选择父级菜单">
+                            <option {% if item.ParentId == 0 %} selected {% endif %} value="0" >根菜单</option>
+                            {% for mn in allMenus %}
+                                <option {% if item.ParentId == mn.Id %} selected {% endif %} value="{{mn.Id}}" >{{mn.Name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">名称</label>
+                    <div class="col-sm-5">
+                        <input type="text"  class="form-control" name="name" placeholder="菜单名称" value="{{item.Name}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">路由</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="路由" name="router"  value="{{item.Router}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">权限</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="权限" name="permission"  value="{{item.Permission}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">类型</label>
+                    <div class="col-sm-5">
+                        <select class="form-control select2" name="type" data-placeholder="选择类型">
+                            <option {% if item.Type == 0 %} selected {% endif %}  value="0" >页面</option>
+                            <option {% if item.Type == 1 %} selected {% endif %}  value="1" >接口</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">状态</label>
+                    <div class="col-sm-5">
+                        <select class="form-control select2" name="visible" data-placeholder="选择类型">
+                            <option {% if item.Visible == 0 %} selected {% endif %}  value="0" >隐藏</option>
+                            <option {% if item.Visible == 1 %} selected {% endif %}  value="1" >显示</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">图标</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="图标" name="icon"  value="{{item.Icon}}">
+                    </div>
+
+                    <a class="col-sm-1 col-form-label text-center" target="_block" href="http://www.fontawesome.com.cn/faicons/">查找</a>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">方法类型</label>
+                    <div class="col-sm-5">
+                        <select class="form-control select2" name="method" data-placeholder="选择类型">
+                            <option {% if item.Method == 'GET' %} selected {% endif %}  value="GET" >GET</option>
+                            <option {% if item.Method == 'POST' %} selected {% endif %}  value="POST" >POST</option>
+                            <option {% if item.Method == 'PUT' %} selected {% endif %}  value="PUT" >PUT</option>
+                            <option {% if item.Method == 'DELETE' %} selected {% endif %}  value="DELETE" >DELETE</option>
+                            <option {% if item.Method == 'OPTIONS' %} selected {% endif %}  value="OPTIONS" >OPTIONS</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <input type="button" onclick="clickSave()" class="btn btn-primary" value="{% if item == nil %}创建{% else %}保存{% endif %}"></input>
+            </div>
+        
+        <!-- /.card-body -->
+    </div>
+    </form>
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript" src="/static/js/select2.full.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+    });
+  function clickSave() {
+    var data = formJson("form");
+    data.parentId = parseInt(data.parentId)
+    data.type = parseInt(data.type)
+    data.visible = parseInt(data.visible)
+    console.log(data)
+    requestAjax("/admin/system/menu/save",data,function(res) {
+        issubmit = false
+        if (res.code == 0) {
+            // window.location.reload();
+        }
+    });
+  }
+
+</script>
+
+{% endblock %}

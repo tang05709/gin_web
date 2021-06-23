@@ -1,0 +1,121 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css" >
+{% endblock %}
+
+<!--中间内容-->
+{% block content %}
+
+{% macro op_select(id) %}
+    {% for mn in item.Menus %}
+        {% if mn.Id == id %}
+        selected
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% macro op_checked(id) %}
+    {% for mn in item.Menus %}
+        {% if mn.Id == id %}
+        checked
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+<section class="content">
+    <form class="form-horizontal" id="form">
+    <div class="card mh card-info">
+        <div class="card-header">
+            <h3 class="card-title">角色详情{{ lorem }}</h3>
+        </div>
+        <!-- /.card-header -->
+        
+            <div class="card-body table-responsive">
+                {% if item != nil %}
+                <input type="hidden" name="id" value="{{item.Id}}">
+                {% endif %}
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">名称</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="名称" name="name"  value="{{item.Name}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">描述</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="描述" name="desc"  value="{{item.Desc}}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">权限</label>
+                    <div class="col-sm-5">
+                        <div class="accordion" id="accordionExample">
+                            {% for menu in menusTree %}
+                            <div class="card">
+                                <div class="card-header" id="headingOne{{menu.Id}}">
+                                    <h2 class="mb-0">
+                                        <span class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne{{menu.Id}}" aria-expanded="true" aria-controls="collapseOne{{menu.Id}}">
+                                          <input {{ op_checked(menu.Id) }} type="checkbox" name="menus" value="{{menu.Id}}" /> {{menu.Name}}
+                                        </span>
+                                    </h2>
+                                </div>
+
+                                <div id="collapseOne{{menu.Id}}" class="collapse show" aria-labelledby="headingOne{{menu.Id}}" data-parent="#accordionExample{{menu.Id}}">
+                                    <div class="card-body">
+                                        {% for mu in menu.Children %}
+                                        <span style="margin-right: 10px; margin-bottom: 20px">
+                                            <input {{ op_checked(mu.Id) }} type="checkbox" name="menus" value="{{mu.Id}}" /> {{mu.Name}}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!--<select class="form-control" multiple="multiple" name="menus" data-placeholder="选择权限菜单" id="menus">
+                            {% for mn in allMenus %}
+                                <option {{ op_select(mn.Id) }} value="{{mn.Id}}" >{{mn.Name}}</option>
+                            {% endfor %}
+                        </select>-->
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <input type="button" onclick="clickSave()" class="btn btn-primary" value="{% if item == nil %}创建{% else %}保存{% endif %}"></input>
+            </div>
+            {% include "../../../layout/loading.html" %}
+        <!-- /.card-body -->
+    </div>
+    
+    </form>
+    
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript" src="/static/js/select2.full.min.js"></script>
+<script type="text/javascript">
+$(function () {
+    //Initialize Select2 Elements
+    $('#menus').select2()
+});
+  function clickSave() {
+    var data = formJson("form");
+    if (data.menus != undefined && data.menus.length > 0 && !Array.isArray(data.menus)) {
+        data.menus = [data.menus]
+    }
+    requestAjax("/admin/system/role/save",data,function(res) {
+        issubmit = false
+        if (res.code == 0) {
+            window.location.reload();
+        }
+    });
+  }
+
+</script>
+
+{% endblock %}

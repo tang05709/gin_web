@@ -1,0 +1,93 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.page.css" >
+{% endblock %}
+<!--Auto Code By 7be.cn-->
+<!--中间内容-->
+{% block content %}
+<section class="content">
+    <div class="card mh">
+        <div class="card-header">
+            <h3 class="card-title">线路列表</h3>
+            <div class="card-tools">
+                <a href="/admin/module/route/edit" class="btn btn-tool btn-sm">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-wrap table-bordered">
+                <thead>
+                <tr>
+                    <th style="width: 20px;">ID</th>
+                    
+                    <th style="width: 100px;">类型:1建党,2建司</th>
+                    
+                    <th style="width: 100px;">封面图</th>
+                    
+                    <th style="width: 100px;">姓名</th>
+                    
+                    <th style="width: 100px;">需要步数</th>
+                    
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in Rows %}
+                <tr>
+                    <td>{{item.Id}}</td>
+                    
+                    <td>{{item.Type}}</td>
+
+                    <td>{% if item.Cover != nil %}<img src="{{item.Cover}}" style="height: 80px" />{% endif %}</td>
+                    
+                    <td>{{item.Name}}</td>
+                    
+                    <td>{{item.Step}}</td>
+                    
+                    <td>{{item.CreatedAt|date:"2006-01-02 15:04:05"}}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="/admin/module/route/edit?Id={{item.Id}}" class="btn btn-outline-primary"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:void(0);" onclick="confirmShow({{item.Id}})" class="btn btn-outline-danger"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <div class="card-footer clearfix">
+        <!--分页-->
+        <div id="page" class="page"></div>
+    </div>
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript" src="/static/js/jquery.pagination.min.js"></script>
+<script type="text/javascript">
+  let countPage = '{{Page.PageCount}}';
+  let current = '{{Page.PageNum}}';
+  let toUrl ='/module/routes'; //获取请求的url
+  window.onload=function(){
+    configPage(countPage,current,toUrl);
+  };
+  function deleteItem(id) {
+        var data = {id:id};
+        requestAjax("/admin/module/route/del",data,function(res) {
+            if (res.code == 0) {
+                window.location.reload();
+            }
+        });
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+-- 插入{{.mod.Name}}菜单
+INSERT INTO `s_menus`(`created_at`, `name`, `parent_id`, `router`, `type`, `visible`, `method`) VALUES (now(), '{{.mod.Name}}管理', 0, '/admin/module/{{.mod.Abbr}}', 0, 1, 'GET');
+
+SET @pid = LAST_INSERT_ID();
+
+INSERT INTO `s_menus`(`created_at`, `name`, `parent_id`, `router`, `type`, `visible`, `method`) VALUES (now(), '{{.mod.Name}}列表', @pid, '/admin/module/{{.mod.Abbr}}s', 0, 1, 'GET');
+INSERT INTO `s_menus`(`created_at`, `name`, `parent_id`, `router`, `type`, `visible`, `method`) VALUES (now(), '编辑{{.mod.Name}}', @pid, '/admin/module/{{.mod.Abbr}}/edit', 0, 1, 'GET');
+INSERT INTO `s_menus`(`created_at`, `name`, `parent_id`, `router`, `type`, `visible`, `method`) VALUES (now(), '编辑{{.mod.Name}}API', @pid, '/admin/module/{{.mod.Abbr}}/save', 1, 0, 'POST');
+INSERT INTO `s_menus`(`created_at`, `name`, `parent_id`, `router`, `type`, `visible`, `method`) VALUES (now(), '删除{{.mod.Name}}API', @pid, '/admin/module/{{.mod.Abbr}}/del', 1, 0, 'POST');

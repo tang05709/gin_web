@@ -1,0 +1,42 @@
+{% extends "../layout/base.html" %}
+
+
+{% block content %}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>欢迎登录后台管理系统</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">提示</h3>
+            <div class="card-tools">
+            
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fas fa-minus"></i></button>
+                <!--<button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">-->
+                <!--<i class="fas fa-times"></i></button>-->
+            </div>
+        </div>
+        <div class="card-body">
+            欢迎您 <strong>{{user.UserName}}</strong>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+            Power By 7be.cn
+        </div>
+        <!-- /.card-footer-->
+    </div>
+    <!-- /.card -->
+
+</section>
+{% endblock %}

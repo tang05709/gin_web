@@ -1,0 +1,153 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.page.css" >
+{% endblock %}
+<!--Auto Code By 7be.cn-->
+<!--中间内容-->
+{% block content %}
+
+
+{% macro get_status(status) %}
+    {% if status == -1 %}
+    驳回
+    {% endif %}
+    {% if status == 1 %}
+    已发货
+    {% endif %}
+    {% if status == 0 %}
+    审核中
+    {% endif %}
+{% endmacro %}
+
+<section class="content">
+    <div class="card mh">
+        <div class="card-header">
+            <h3 class="card-title">兑换礼品表列表</h3>
+            <div class="card-tools">
+                <a href="/admin/module/userGoods/edit" class="btn btn-tool btn-sm">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-wrap table-bordered">
+                <thead>
+                <tr>
+                    <th style="width: 20px;">ID</th>
+                    
+                    <th style="width: 100px;">用户</th>
+                    
+                    <th style="width: 100px;">礼品</th>
+                    
+                    <th style="width: 100px;">状态：0审核中1已发货-1驳回</th>
+                    
+                    <th style="width: 100px;">用户名</th>
+                    
+                    <th style="width: 100px;">电话号</th>
+                    
+                    <th style="width: 100px;">联系地址</th>
+                    
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in Rows %}
+                <tr>
+                    <td>{{item.Id}}</td>
+
+                    <td>{{ item.User.UserName }}</td>
+
+                    <td>{{ item.Goods.Title }}</td>
+                    
+                    <td>{{ get_status(item.Status) }}</td>
+                    
+                    <td>{{item.Name}}</td>
+                    
+                    <td>{{item.Phone}}</td>
+                    
+                    <td>{{item.Address}}</td>
+                    
+                    <td>{{item.CreatedAt|date:"2006-01-02 15:04:05"}}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="/admin/module/userGoods/edit?Id={{item.Id}}" class="btn btn-outline-primary"><i class="fas fa-edit"></i></a>
+                            {% if item.Status == 0 %}
+                            <a data-id="{{item.Id}}" data-type="reject" class="btn btn-outline-primary status-check" title="驳回"><i class="fas fa-times-circle"></i></a>
+                            <a data-id="{{item.Id}}" data-type="send" class="btn btn-outline-primary status-check" title="发货"><i class="fas fa-check-circle"></i></a>
+                            {% endif %}
+                            <a href="javascript:void(0);" onclick="confirmShow({{item.Id}})" class="btn btn-outline-danger"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <div class="card-footer clearfix">
+        <!--分页-->
+        <div id="page" class="page"></div>
+    </div>
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript" src="/static/js/jquery.pagination.min.js"></script>
+<script type="text/javascript">
+  let countPage = '{{Page.PageCount}}';
+  let current = '{{Page.PageNum}}';
+  let toUrl ='/module/userGoodss'; //获取请求的url
+  window.onload=function(){
+    configPage(countPage,current,toUrl);
+  };
+  $(function () {
+      //Initialize Select2 Elements
+      $('.status-check').click(function() {
+          var type = $(this).attr('data-type');
+          var id = $(this).attr("data-id");
+          var urlStr = '/admin/module/userGoods/status';
+
+          var data = {id: parseInt(id), type: type};
+          if (type != '') {
+              $.ajax({
+                  url: urlStr,
+                  type: "post",
+                  contentType : "application/json",
+                  data: JSON.stringify(data),
+                  dataType: "json",
+                  success: function (data) {
+                      console.log(data.code)
+                      if (data.code == 0) {
+                          window.location.reload();
+                      } else {
+                          alert(data.msg);
+                          return
+                      }
+                  },
+                  error: function (data) {
+                      alert(data.msg);
+                      return
+                  }
+              })
+          }
+
+
+      })
+  });
+  function deleteItem(id) {
+        var data = {id:id};
+        requestAjax("/admin/module/userGoods/del",data,function(res) {
+            if (res.code == 0) {
+                window.location.reload();
+            }
+        });
+    }
+</script>
+
+{% endblock %}

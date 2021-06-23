@@ -1,0 +1,123 @@
+{% extends "../../../layout/base.html"  %}
+
+<!--样式引入-->
+{% block link %}
+<link rel="stylesheet" type="text/css" href="/static/css/select2.min.css" >
+{% endblock %}
+<!--Auto Code By 7be.cn-->
+<!--中间内容-->
+{% block content %}
+
+
+<section class="content">
+    <form class="form-horizontal" id="form">
+    <div class="card mh card-info">
+        <div class="card-header">
+            <h3 class="card-title">微信用户详情</h3>
+        </div>
+        <!-- /.card-header -->
+        
+            <div class="card-body table-responsive">
+                {% if item != nil %}
+                <input type="hidden" name="id" value="{{item.Id}}">
+                {% endif %}
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">微信标识</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="微信标识" name="openid"  value="{{item.Openid}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">路线:0未选择,1建党,2建司</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="路线:0未选择,1建党,2建司" name="route"  value="{{item.Route}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">姓名</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="姓名" name="name"  value="{{item.Name}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">手机号</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="手机号" name="phone"  value="{{item.Phone}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">投保机构</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="投保机构" name="agency"  value="{{item.Agency}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">平均步数</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="平均步数" name="avg"  value="{{item.Avg}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">累积步数</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="累积步数" name="total"  value="{{item.Total}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">地址</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" placeholder="地址" name="address"  value="{{item.Name}}">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label text-center">下拉示例</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" name="menus" data-placeholder="选择" id="member">
+                            <option  value="1" >选项1</option>
+                            <option  value="2" >选项2</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <input type="button" onclick="clickSave()" class="btn btn-primary" value="{% if item == nil %}创建{% else %}保存{% endif %}"></input>
+            </div>
+            {% include "../../../layout/loading.html" %}
+        <!-- /.card-body -->
+    </div>
+    
+    </form>
+    
+</section>
+{% endblock %}
+
+<!--JS引入-->
+{% block scripts %}
+<script type="text/javascript" src="/static/js/select2.full.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //Initialize Select2 Elements
+        $('#member').select2()
+    });
+  function clickSave() {
+    var data = formJson("form");
+    requestAjax("/admin/module/member/save",data,function(res) {
+        issubmit = false
+        if (res.code == 0) {
+            window.location.reload();
+        }
+    });
+  }
+
+</script>
+
+{% endblock %}

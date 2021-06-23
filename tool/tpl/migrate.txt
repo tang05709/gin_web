@@ -1,0 +1,14 @@
+package migrates
+
+import (
+	"festival/app/common/db"
+	"festival/app/model/module"
+)
+
+// {{.mod.Name}}
+// power by 7be.cn
+func init() {
+	db.DbList = append(db.DbList,
+		module.{{.mod.ModName}}{},
+	)
+}
